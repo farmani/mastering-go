@@ -1,6 +1,6 @@
-# Chapter 2: “Basic Go Data Types”
+# Chapter 2: Basic Go Data Types
 
-* all Go variables should have a data type that is determined either implicitly or explicitly.
+* all Go variables should have a data type that is determined either implicitly or explicitly.
 
 ## The error data type
 
@@ -11,8 +11,8 @@
 * Should you wish to return a custom error, you can use `errors.New()` from the `errors` package. This usually happens inside a function other than `main()` because `main()` does not return anything to any other function. Additionally, a good place to define your custom errors is inside the Go packages you create.
 > You will most likely work with errors in your programs without needing the functionality of the errors package. Additionally, you do not need to define custom error messages unless you are creating big applications or packages.
 * You can use the `fmt.Errorf()` function, which simplifies the creation of custom error messages—the `fmt.Errorf()` function returns an error value just like `errors.New()`.
-* You should have a global error handling tactic in each application that should not change. In practice, this means the following:
-	* 	All error messages should be handled at the same level, which means that all errors should either be returned to the calling function or be handled at the place they occurred.
+* You should have a global error handling tactic in each application that should not change. In practice, this means the following:
+	* 	All error messages should be handled at the same level, which means that all errors should either be returned to the calling function or be handled at the place they occurred.
 	* It should be clearly documented how to handle critical errors. This means that there will be situations where a critical error should terminate the program and other times where a critical error might just create a warning message onscreen.
 	* It is considered a good practice to send all error messages to the log service of your machine because this way the error messages can be examined at a later time. However, this is not always true, so exercise caution when setting this up—for example, cloud native apps do not work that way.
 
