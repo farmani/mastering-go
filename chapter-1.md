@@ -816,7 +816,7 @@ func main() {
 
 - The exe variable holds the path to the executable file—it is a nice and professional touch to print the name of the executable binary in the instructions of the program
 
-### Exercises
+## Exercises
 - Our version of which(1) stops after finding the first occurrence of the desired executable. Make the necessary changes to which.go in order to find all possible occurrences of the desired executable.
 - The current version of which.go processes the first command-line argument only. Make the necessary changes to which.go in order to accept and search the PATH variable for multiple executable binaries.
 - Read the documentation of the fmt package at https://golang.org/pkg/fmt/.
