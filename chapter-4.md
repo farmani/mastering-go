@@ -1004,4 +1004,12 @@ func list() {
 }
 ```
 ## Exercises
+Create a slice of structures using a structure that you created and sort the elements of the slice using a field from the structure
+Integrate the functionality of sortCSV.go in phonebook.go
+Add support for a reverse command to phonebook.go in order to list its entries in reverse order
+Use the empty interface and a function that allows you to differentiate between two different structures that you create
 ## Additional resources
+The documentation of the reflect package: [https://golang.org/pkg/reflect/](https://golang.org/pkg/reflect/)
+The documentation of the sort package: [https://golang.org/pkg/sort/](https://golang.org/pkg/sort/)
+Working with errors in Go 1.13: [https://blog.golang.org/go1.13-errors](https://blog.golang.org/go1.13-errors)
+The implementation of the sort package: [https://golang.org/src/sort/](https://golang.org/src/sort/)
