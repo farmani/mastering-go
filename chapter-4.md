@@ -126,12 +126,11 @@ reflection should be used sparingly for three main reasons:
 * The last reason is that reflection **_errors cannot be caught at build time_** and are reported at runtime as panics, which means that _reflection errors can potentially crash your programs_. This can happen months or even years after the development of a Go program! One solution to this problem is extensive testing before a dangerous function call. However, this adds even more Go code to your programs, which makes them even slower.
 
 ## Type methods
-A type method is a function that is attached to a specific data type. Although type methods (or methods on types) are in reality functions, they are defined and used in a slightly different way.
+A `type method` is a function that is attached to a specific data type. Although type methods (or methods on types) are in reality `functions`, they are defined and used in a slightly different way.
 
 > The methods on types feature gives some object-oriented capabilities to Go, which is very handy and is used extensively in Go. Additionally, interfaces require type methods to work.
     
 Defining new type methods is as simple as creating new functions, provided that you follow certain rules that associate the function with a data type.
-
 
 ### Creating type methods
 Having a data type called ar2x2, you can create a type method named FunctionName for it as follows:
@@ -141,23 +140,28 @@ func (a ar2x2) FunctionName(parameters) <return values> {
     ...
 }
 ```
-The (a ar2x2) part is what makes the FunctionName() function a type method because it associates FunctionName() with the ar2x2 data type. No other data type can use that function. However, you are free to implement FunctionName() for other data types or as a regular function. If you have a ar2x2 variable named varAr, you can invoke FunctionName() as varAr.FunctionName(...), which looks like selecting the field of a structure variable.
-You are not obligated to develop type methods if you do not want to. In fact, each type method can be rewritten as a regular function. Therefore, FunctionName() can be rewritten as follows:
+
+The `(a ar2x2)` part is what makes the `FunctionName()` function a type method because it associates `FunctionName()` with the `ar2x2` data type. No other data type can use that function. However, you are free to implement `FunctionName()` for other data types or as a regular function. If you have a `ar2x2` variable named `varAr`, you can invoke `FunctionName()` as `varAr.FunctionName(...)`, which looks like selecting the field of a structure variable.
+
+You are not obligated to develop type methods if you do not want to. In fact, each type method can be rewritten as a regular function. Therefore, `FunctionName()` can be rewritten as follows:
 
 ```go
 func FunctionName(a ar2x2, parameters...) <return values> {
     ...
 }
 ```
-Have in mind that under the hood, the Go compiler does turn methods into regular function calls with the self value as the first parameter. However, interfaces require the use of type methods to work.
+
+_Have in mind that under the hood, the Go compiler does turn methods into regular function calls with the self value as the first parameter_. However, interfaces require the use of type methods to work.
 
 > The expressions used for selecting a field of a structure or a type method of a data type, which would replace the ellipsis after the variable name above, are called selectors.
     
-Performing calculations between matrices of a given size is one of the rare cases where using an array instead of a slice makes more sense because you do not have to modify the size of the matrices. Some might argue that using a slice instead of an array pointer is a better practice—you are allowed to use what makes more sense to you.
-Most of the time, and when there is such a need, the results of a type method are saved in the variable that invoked the type method—in order to implement that for the ar2x2 data type, we pass a pointer to the array that invoked the type method, like func (a *ar2x2).
+_Performing calculations between matrices of a given size is one of the rare cases where using an array instead of a slice makes more sense because you do not have to modify the size of the matrices._ Some might argue that using a slice instead of an array pointer is a better practice—you are allowed to use what makes more sense to you.
+
+Most of the time, and when there is such a need, _the results of a type method are saved in the variable that invoked the type method_—in order to implement that for the `ar2x2` data type, we pass a pointer to the array that invoked the type method, like func (a *ar2x2).
 
 ### Using type methods
-The Add() function and the Add() method use the exact same algorithm for adding two matrices. The only difference between them is the way they are being called and the fact that the function returns an array whereas the method saves the result to the calling variable.
+
+The `Add()` function and the `Add()` method use the exact same algorithm for adding two matrices. The only difference between them is the way they are being called and the fact that the function returns an array whereas the method saves the result to the calling variable.
 
 > If you are defining type methods for a structure, you should make sure that the names of the type methods do not conflict with any field name of the structure because the Go compiler will reject such ambiguities.
 
@@ -169,7 +173,8 @@ import (
     "strconv"
 )
 type ar2x2 [2][2]int
-// Traditional Add() function
+
+// Add Traditional function
 func Add(a, b ar2x2) ar2x2 {
     c := ar2x2{}
     for i := 0; i < 2; i++ {
@@ -179,7 +184,8 @@ func Add(a, b ar2x2) ar2x2 {
     }
     return c
 }
-// Type method Add()
+
+// Add Type method
 func (a *ar2x2) Add(b ar2x2) {
 	for i := 0; i < 2; i++ {
 		for j := 0; j < 2; j++ {
@@ -187,11 +193,8 @@ func (a *ar2x2) Add(b ar2x2) {
 		}
 	}
 }
-```
-What happens is that the ar2x2 variable that called the Add() method is going to be modified and hold the result—this is the reason for using a pointer when defining the type method.
 
-```go
-// Type method Subtract()
+// Subtract Type method
 func (a *ar2x2) Subtract(b ar2x2) {
     for i := 0; i < 2; i++ {
         for j := 0; j < 2; j++ {
@@ -200,16 +203,14 @@ func (a *ar2x2) Subtract(b ar2x2) {
     }
 }
 
-// Type method Multiply()
+// Multiply Type method
 func (a *ar2x2) Multiply(b ar2x2) {
     a[0][0] = a[0][0]*b[0][0] + a[0][1]*b[1][0]
     a[1][0] = a[1][0]*b[0][0] + a[1][1]*b[1][0]
     a[0][1] = a[0][0]*b[0][1] + a[0][1]*b[1][1]
     a[1][1] = a[1][0]*b[0][1] + a[1][1]*b[1][1]
 }
-```
 
-```go
 func main() {
     if len(os.Args) != 9 {
         fmt.Println("Need 8 integers")
@@ -240,28 +241,38 @@ func main() {
     fmt.Println("b*a:", b)
 }
 ```
-## Interfaces
-An interface is a Go mechanism for defining behavior that is implemented using a set of methods. Interfaces play a key role in Go and can simplify the code of your programs when they have to deal with multiple data types that perform the same task. But remember, interfaces should not be unnecessarily complex. If you decide to create your own interfaces, then you should begin with a common behavior that you want to be used by multiple data types.
-Interfaces work with methods on types (or type methods), which are like functions attached to given data types, which in Go are usually structures (although we can use any data type we want).
-Once you implement the required type methods of an interface, that interface is satisfied implicitly.
-The empty interface is defined as just interface{}. As the empty interface has no methods, it means that it is already implemented by all data types.
-a Go interface type defines (or describes) the behavior of other types by specifying a set of methods that need to be implemented for supporting that behavior. For a data type to satisfy an interface, it needs to implement all the type methods required by that interface. Therefore, interfaces are abstract types that specify a set of methods that need to be implemented so that another type can be considered an instance of the interface. So, an interface is two things: a set of methods and a type. Have in mind that small and well-defined interfaces are usually the most popular ones.
 
-> As a rule of thumb, only create a new interface when you want to share a common behavior between two or more concrete data types. This is basically duck typing.
+What happens is that the `ar2x2` variable that called the `Add()` method is going to be modified and hold the result—this is the reason for using a pointer when defining the type method.
+
+## Interfaces
+
+An interface is a Go mechanism for defining behavior that is implemented using a set of methods. Interfaces play a key role in Go and can simplify the code of your programs when they have to deal with multiple data types that perform the same task. But remember, interfaces should not be unnecessarily complex. If you decide to create your own interfaces, then you should begin with a common behavior that you want to be used by multiple data types.
+
+Interfaces work with methods on types (or type methods), which are like functions attached to given data types, which in Go are usually structures (although we can use any data type we want).
+
+Once you implement the required type methods of an interface, that interface is satisfied implicitly.
+
+The empty interface is defined as just `interface{}`. As the empty interface has no methods, it means that it is already implemented by all data types.
+
+A Go `interface type` defines (or describes) the behavior of other types by specifying a set of methods that need to be implemented for supporting that behavior. For a data type to satisfy an interface, it needs to implement all the type methods required by that interface. _Therefore, interfaces are `abstract types` that specify a set of methods that need to be implemented so that another type can be considered an instance of the interface._ So, an interface is two things: a set of methods and a type. _Have in mind that small and well-defined interfaces are usually the most popular ones._
+
+> As a rule of thumb, only create a new interface when you want to share a common behavior between two or more concrete data types. This is basically **_duck typing_**.
 
 The biggest advantage you get from interfaces is that if needed, you can pass a variable of a data type that implements a particular interface to any function that expects a parameter of that specific interface, which saves you from having to write separate functions for each supported data type. However, Go offers an alternative to this with the recent addition of generics.
+
 Interfaces can also be used for providing a kind of polymorphism in Go, which is an object-oriented concept. Polymorphism offers a way of accessing objects of different types in the same uniform way when they share a common behavior.
+
 Lastly, interfaces can be used for composition. In practice, this means that you can combine existing interfaces and create new ones that offer the combined behavior of the interfaces that were brought together.
 
 There is nothing prohibiting you from including additional methods in the definition of the ABC interface if the combination of existing interfaces does not describe the desired behavior accurately.
 
-When you combine existing interfaces, it is better that the interfaces do not contain methods with the same name.
+**_When you combine existing interfaces, it is better that the interfaces do not contain methods with the same name._**
 
 > What you should keep in mind is that there is no need for an interface to be impressive and require the implementation of a large number of methods. In fact, the fewer methods an interface has, the more generic and widely used it can be, which improves its usefulness and therefore its usage.
 
+### The `sort.Interface` interface
 
-### The sort.Interface interface
-The sort package contains an interface named sort.Interface that allows you to sort slices according to your needs and your data, provided that you implement sort.Interface for the custom data types stored in your slices.
+The `sort` package contains an interface named `sort.Interface` that allows you to sort slices according to your needs and your data, provided that you implement `sort.Interface` for the custom data types stored in your slices.
 
 ```go
 type Interface interface {
@@ -274,7 +285,8 @@ type Interface interface {
     Swap(i, j int)
 }
 ```
-The Len() method returns the length of the slice that will be sorted and helps the interface to process all slice elements whereas the Less() method, which compares and sorts elements in pairs, defines how elements are going to be compared and therefore sorted. The return value of Less() is bool, which means that Less() only cares about whether the element at index i is bigger or not than the element at index j in the way that the two elements are being compared. Lastly, the Swap() method is used for swapping two elements of the slice, which is required for the sorting algorithm to work.
+
+The `Len()` method returns the length of the slice that will be sorted and helps the interface to process all slice elements whereas the `Less()` method, which compares and sorts elements in pairs, defines how elements are going to be compared and therefore sorted. The return value of `Less()` is bool, which means that `Less()` only cares about whether the element at index i is bigger or not than the element at index j in the way that the two elements are being compared. Lastly, the `Swap()` method is used for swapping two elements of the slice, which is required for the sorting algorithm to work.
 
 ```go
 package main
@@ -287,7 +299,7 @@ type S1 struct {
     F2 string
     F3 int
 }
-// We want to sort S2 records based on the value of F3.F1,
+// S2 We want to sort records based on the value of F3.F1,
 // Which is equivalent to S1.F1 as F3 is an S1 structure
 type S2 struct {
     F1 int
@@ -297,12 +309,12 @@ type S2 struct {
 
 type S2slice []S2
 
-// Implementing sort.Interface for S2slice
+// Len Implementing sort.Interface for S2slice
 func (a S2slice) Len() int {
 	return len(a)
 }
 
-// What field to use when comparing
+// Less What field to use when comparing
 func (a S2slice) Less(i, j int) bool {
 	return a[i].F3.F1 < a[j].F3.F1
 }
@@ -325,15 +337,16 @@ func main() {
 	fmt.Println("Reverse:", data)
 }
 ```
-You need to have a slice because all sorting operations work on slices. It is for this slice, which should be a new data type that in this case is called S2slice, that you are going to implement the three type methods of the sort.Interface.
 
-Once you have implemented sort.Interface, you'll see that sort.Reverse(), which is used for reverse sorting your slice, works automatically
+You need to have a slice because **_all sorting operations work on slices_**. It is for this slice, which should be a new data type that in this case is called S2slice, that you are going to implement the three type methods of the `sort.Interface`.
+
+Once you have implemented `sort.Interface`, you'll see that `sort.Reverse()`, which is used for reverse sorting your slice, works automatically
+
 ### The empty interface
-Once you have implemented sort.Interface, you'll see that sort.Reverse(), which is used for reverse sorting your slice, works automatically
 
-Print() requires an interface{} parameter that can accept both S1 and S2 variables. The fmt.Println(s) statement inside Print() can work with both S1 and S2.
+`Print()` requires an `interface{}` parameter that can accept both S1 and S2 variables. The `fmt.Println(s)` statement inside `Print()` can work with both S1 and S2.
 
-> If you create a function that accepts one or more interface{} parameters and you run a statement that can only be applied to a limited number of data types, things will not work out well. As an example, not all interface{} parameters can be multiplied by 5 or be used in fmt.Printf() with the %d control string.
+> If you create a function that accepts one or more `interface{}` parameters, and you run a statement that can only be applied to a limited number of data types, things will not work out well. As an example, not all `interface{}` parameters can be multiplied by 5 or be used in `fmt.Printf()` with the `%d` control string.
 
 ```go
 package main
@@ -360,16 +373,20 @@ func main() {
 	Print("Go is the best!")
 }
 ```
-Using the empty interface is easy as soon as you realize that you can pass any type of variable in the place of an interface{} parameter and you can return any data type as an interface{} return value. However, with great power comes great responsibility—you should be very careful with interface{} parameters and their return values, because in order to use their real values you have to be sure about their underlying data type.
+
+Using the empty interface is easy as soon as you realize that you can pass any type of variable in the place of an `interface{}` parameter, and you can return any data type as an `interface{}` return value. However, **_with great power comes great responsibility_**—you should be very careful with `interface{}` parameters and their return values, because in order to use their real values you have to be sure about their underlying data type.
 
 ### Type assertions and type switches
-A type assertion is a mechanism for working with the underlying concrete value of an interface. This mainly happens because interfaces are virtual data types without their own values—interfaces just define behavior and do not hold data of their own. But what happens when you do not know the data type before attempting a type assertion?
-The answer is by using type switches. Type switches use switch blocks for data types and allow you to differentiate between type assertion values, which are data types, and process each data type the way you want. On the other hand, in order to use the empty interface in type switches, you need to use type assertions.
+
+A `type assertion` is a mechanism for working with the underlying concrete value of an interface. This mainly happens because interfaces are virtual data types without their own values—interfaces just define behavior and do not hold data of their own. But what happens when you do not know the data type before attempting a type assertion?
+
+The answer is by using `type switches`. Type switches use `switch` blocks for data types and allow you to differentiate between type assertion values, which are data types, and process each data type the way you want. On the other hand, in order to use the empty interface in type switches, you need to use type assertions.
 
 > You can have type switches for all kinds of interfaces and data types in general.
 
 Therefore, the real work begins once you enter the function, because this is where you need to define the supported data types and the actions that take place for each supported data type.
-Type assertions use the x.(T) notation, where x is an interface type and T is a type, and help you extract the value that is hidden behind the empty interface. For a type assertion to work, x should not be nil and the dynamic type of x should be identical to the T type.
+
+Type assertions use the `x.(T)` notation, where x is an interface type and T is a type, and help you **_extract the value that is hidden behind the empty interface_**. For a type assertion to work, **_x should not be nil and the dynamic type of x should be identical to the T type_**.
 
 ```go
 package main
@@ -408,19 +425,19 @@ func main() {
 	Learn('€')
 }
 ```
-The Learn() function prints the data type of its input parameter.
+The `Learn()` function prints the data type of its input parameter.
 
 Strictly speaking, type assertions allow you to perform two main tasks:
 
-      Checking whether an interface value keeps a particular type. When used this way, a type assertion returns two values: the underlying value and a bool value. The underlying value is what you might want to use. However, it is the value of the bool variable that tells you whether the type assertion was successful or not and therefore whether you can use the underlying value or not. Checking whether a variable named aVar is of the int type requires the use of the aVar.(int) notation, which returns two values. If successful, it returns the real int value of aVar and true. Otherwise, it returns false as the second value, which means that the type assertion was not successful and that the real value could not be extracted.
-      Using the concrete value stored in an interface or assigning it to a new variable. This means that if there is a float64 variable in an interface, a type assertion allows you to get that value.
+* Checking whether an interface value keeps a particular type. When used this way, a type assertion returns two values: the `underlying value` and a `bool` value. The underlying value is what you might want to use. However, _**it is the value of the bool variable that tells you whether the type assertion was successful or not**_ and therefore whether you can use the underlying value or not. Checking whether a variable named `aVar` is of the `int` type requires the use of the `aVar.(int)` notation, which returns two values. If successful, it returns the real int value of aVar and true. Otherwise, it returns false as the second value, which means that the type assertion was not successful and that the real value could not be extracted. 
+* Using the concrete value stored in an interface or assigning it to a new variable. This means that if there is a `float64` variable in an interface, a type assertion allows you to get that value.
 
-> The functionality offered by the reflect package helps Go identify the underlying data type and the real value of an interface{} variable.
+> The functionality offered by the `reflect` package helps Go identify the underlying data type and the real value of an `interface{}` variable.
 
 As explained, trying to extract the concrete value from an interface using a type assertion can have two outcomes:
 
-      If you use the correct concrete data type, you get the underlying value without any issues
-      If you use an incorrect concrete data type, your program will panic
+* If you use the correct concrete data type, you get the underlying value without any issues
+* If you use an incorrect concrete data type, your program will panic
 
 ```go
 package main
@@ -457,10 +474,15 @@ func main() {
     _ = anInt.(bool)
 }
 ```
-The last statement panics the program because the anInt variable does not hold a bool value.
+
+_The last statement panics the program because the anInt variable does not hold a bool value._
+
 The reason for the panic is written onscreen: panic: interface conversion: interface {} is int, not bool.
-### The map[string]interface{} map
-Remember that the biggest advantage you get from using a map[string]interface{} map or any map that stores an interface{} value in general, is that you still have your data in its original state and data type. If you use map[string]string instead, or anything similar, then any data you have is going to be converted into a string, which means that you are going to lose information about the original data type and the structure of the data you are storing in the map.
+
+### The `map[string]interface{}` map
+
+Remember that the biggest advantage you get from using a `map[string]interface{}` map or any map that stores an `interface{}` value in general, is that you still have your data in its original state and data type. _If you use `map[string]string` instead, or anything similar, then any data you have is going to be converted into a string, which means that you are going to lose information about the original data type and the structure of the data you are storing in the map._
+
 ```go
 package main
 import (
@@ -529,28 +551,30 @@ func main() {
 	typeSwitch(JSONMap)
 }
 ```
-If a map is found, then we recursively call typeSwitch() on the new map in order to examine it even more.
 
-The exploreMap() function inspects the contents of its input map. If a map is found, then we call exploreMap() on the new map recursively in order to examine it on its own.
+If a `map` is found, then we recursively call `typeSwitch()` on the new map in order to examine it even more.
 
-json.Unmarshal() processes JSON data and converts it into a Go value. Although this value is usually a Go structure, in this case we are using a map as specified by the map[string]interface{} variable. Strictly speaking, the second parameter of json.Unmarshal() is of the empty interface data type, which means that its data type can be anything.
+The `exploreMap()` function inspects the contents of its input map. If a map is found, then we call `exploreMap()` on the new map recursively in order to examine it on its own.
 
-> map[string]interface{} is extremely handy for storing JSON records when you do not know their schema in advance. In other words, map[string]interface{} is good at storing arbitrary JSON data of unknown schema.
+`json.Unmarshal()` processes JSON data and converts it into a Go value. Although this value is usually a Go structure, in this case we are using a map as specified by the map[string]interface{} variable. Strictly speaking, the second parameter of json.Unmarshal() is of the empty interface data type, which means that its data type can be anything.
 
-The error message in the third execution is generated by json.Unmarshal() as it cannot understand the schema of the JSON record.
+> `map[string]interface{}` is extremely handy for storing JSON records when you do not know their schema in advance. In other words, `map[string]interface{}` is good at storing arbitrary JSON data of unknown schema.
 
+The error message in the third execution is generated by `json.Unmarshal()` as it cannot understand the schema of the JSON record.
 
 ### The error data type
+
 ```go
 type error interface {
     Error() string
 }
 ```
-So, in order to satisfy the error interface you just need to implement the Error() string type method.
+
+So, in order to satisfy the error interface you just need to implement the `Error() string` type method.
 
 However, the crucial question is when you should implement the error interface on your own instead of using the default one. The answer to that question is when you want to give more context to an error condition.
 
- When there is nothing more to read from a file, Go returns an io.EOF error, which, strictly speaking, is not an error condition but a logical part of reading a file. If a file is totally empty, you still get io.EOF when you try to read it. However, this might cause problems in some situations and you might need to have a way of differentiating between a totally empty file and a file that has been read fully and there is nothing more to read. One way of dealing with that issue is with the help of the error interface.
+When there is nothing more to read from a file, Go returns an `io.EOF` error, which, strictly speaking, is not an error condition but a logical part of reading a file. If a file is totally empty, you still get `io.EOF` when you try to read it. However, this might cause problems in some situations, and you might need to have a way of differentiating between a totally empty file and a file that has been read fully and there is nothing more to read. One way of dealing with that issue is with the help of the error interface.
 
 ```go
 type emptyFile struct {
@@ -589,7 +613,7 @@ func readFile(file string) error {
         if err == io.EOF {
             // End of File: nothing more to read
             if n == 0 {
-            return emptyFile{true, n}
+                return emptyFile{true, n}
             }
 
             break
@@ -618,15 +642,17 @@ func main() {
     }
 }
 ```
-This is a type assertion for getting an emptyFile structure from the error variable.
 
-If you are dealing with multiple error variables, you should add a type switch to the isFileEmpty() function after the type assertion.
+This is a `type assertion` for getting an `emptyFile` structure from the error variable.
+
+If you are dealing with multiple error variables, you should add a `type switch` to the `isFileEmpty()` function after the type assertion.
 
 This kind of context is added to the emptyFile structure and returned as an error value.
-The order we do the checking in is important because only the first match is executed. This means that we have to go from more specific cases to more generic conditions.
 
+_The order we do the checking in is important because only the first match is executed. This means that we have to go from more specific cases to more generic conditions._
 
 ### Writing your own interfaces
+
 Creating your own interfaces is easy. For reasons of simplicity, we include our own interface in the main package. However, this is rarely the case as we usually want to share our interfaces, which means that interfaces are usually included in Go packages other than main.
 
 ```go
@@ -634,10 +660,12 @@ type Shape2D interface {
     Perimeter() float64
 }
 ```
-in order for a data type to satisfy the Shape2D interface, it needs to implement a type method named Perimeter() that returns a float64 value.
 
-The code that follows presents the simplest way of using an interface, which is by calling its method directly, as if it was a function, to get a result. Although this is allowed, it is rarely the case as we usually create functions that accept interface parameters in order for these functions to be able to work with multiple data types.
-The code uses a handy technique for quickly finding out whether a given variable is of a given data type that was presented earlier in assertions.go. In this case, we examine whether a variable is of the Shape2D interface by using the interface{}(a).(Shape2D) notation, where a is the variable that is being examined and Shape2D is the data type against the variable being checked.
+in order for a data type to satisfy the Shape2D interface, it needs to implement a type method named `Perimeter()` that returns a `float64` value.
+
+The code that follows presents the simplest way of using an interface, which is by calling its method directly, as if it was a function, to get a result. Although this is allowed, _it is rarely the case as we usually create functions that accept interface parameters in order for these functions to be able to work with multiple data types_.
+
+> The code uses a handy technique for quickly finding out whether a given variable is of a given data type that was presented earlier in assertions.go. In this case, we examine whether a variable is of the Shape2D interface by using the `interface{}(a).(Shape2D)` notation, where `a` is the variable that is being examined and Shape2D is the data type against the variable being checked.
 
 ```go
 type circle struct {
@@ -656,14 +684,16 @@ func main() {
     }
 }
 ```
-the interface{}(a).(Shape2D) notation checks whether the a variable satisfies the Shape2D interface without using its underlying value (circle{R: 1.5}).
+
+The `interface{}(a).(Shape2D)` notation checks whether the `a` variable satisfies the Shape2D interface without using its underlying value (circle{R: 1.5}).
 
 The fact that Go considers interfaces as data types allows us to create slices with elements that satisfy a given interface without getting any error messages.
-This kind of scenario can be useful in various cases because it illustrates how to store elements with different data types that all satisfy a common interface on the same slice and how to sort them using sort.Interface. Put simply, the presented utility sorts different structures with different numbers and names of fields that all share a common behavior through an interface implementation.
 
-types. The sort.Interface interface is implemented for the shapes data type, which is defined as a slice of Shape3D elements.
+This kind of scenario can be useful in various cases because it illustrates how to store elements with different data types that all satisfy a common interface on the same slice and how to sort them using `sort.Interface`. Put simply, the presented utility sorts different structures with different numbers and names of fields that all share a common behavior through an interface implementation.
 
-As floating-point numbers have a lot of decimal points, printing is implemented using a separate function named PrintShapes() that uses an fmt.Printf("%.2f ", v) statement to specify the number of decimal points that are displayed onscreen
+The `sort.Interface` interface is implemented for the shapes data type, which is defined as a slice of Shape3D elements.
+
+As floating-point numbers have a lot of decimal points, printing is implemented using a separate function named `PrintShapes()` that uses an `fmt.Printf("%.2f ", v)` statement to specify the number of decimal points that are displayed onscreen
 
 ```go
 package main
@@ -758,13 +788,14 @@ func main() {
 ```
 
 ## Working with two different CSV file formats
-Remember that the records of each CSV format are stored using their own Go structure under a different variable name. As a result, we need to implement sort.Interface for both CSV formats and therefore for both slice variables.
-The two supported formats are the following:
 
-      Format 1: name, surname, telephone number, time of last access
-      Format 2: name, surname, area code, telephone number, time of last access
+Remember that the records of each CSV format are stored using their own Go structure under a different variable name. As a result, we need to implement `sort.Interface` for both CSV formats and therefore for both slice variables.
+
+The two supported formats are the following:
+* Format 1: name, surname, telephone number, time of last access
+* Format 2: name, surname, area code, telephone number, time of last access
     
-    As the two CSV formats that are going to be used have a different number of fields, the utility determines the format that is being used by the number of fields found in the first record that was read and acts accordingly. After that, the data will be sorted using sort.Sort()—the data type of the slice that keeps the data helps Go determine the sort implementation that is going to be used without any help from the developer.
+As the two CSV formats that are going to be used have a different number of fields, the utility determines the format that is being used by the number of fields found in the first record that was read and acts accordingly. After that, the data will be sorted using `sort.Sort()`—the data type of the slice that keeps the data helps Go determine the sort implementation that is going to be used without any help from the developer.
     
 > The main benefit you get from functions that work with empty interface variables is that you can add support for additional data types easily at a later time without the need to implement additional functions and without breaking existing code.
 
@@ -812,8 +843,11 @@ func readCSVFile(filepath string) error {
     }
 }
 ```
+
 The first line of the CSV file determines its format—therefore, we need a flag variable for specifying whether we are dealing with the first line (firstLine) or not. Additionally, we need a second variable for specifying the format we are working with (format1 is that variable).
-The sortData() function accepts an empty interface parameter. The code of the function determines the data type of the slice that is passed as an empty interface to that function using a type switch. After that, a type assertion allows you to use the actual data stored under the empty interface parameter. Its full implementation is as follows:
+
+The `sortData()` function accepts an empty interface parameter. The code of the function determines the data type of the slice that is passed as an empty interface to that function using a `type switch`. After that, a type assertion allows you to use the actual data stored under the empty interface parameter. Its full implementation is as follows:
+
 ```go
 func sortData(data interface{}) {
     // type switch
@@ -831,8 +865,8 @@ func sortData(data interface{}) {
     }
 }
 ```
-Lastly, list() prints the data of the data variable used using the technique found in sortData(). Although the code that handles Book1 and Book2 is the same as in sortData(), you still need a type assertion to get the data from the empty interface variable.
 
+Lastly, `list()` prints the data of the data variable using the technique found in `sortData()`. Although the code that handles Book1 and Book2 is the same as in sortData(), you still need a type assertion to get the data from the empty interface variable.
 
 ```go
 func list(d interface{}) {
@@ -852,9 +886,15 @@ func list(d interface{}) {
     }
 }
 ```
+
 ## Object-oriented programming in Go
+
 As Go does not support all object-oriented features, it cannot replace an object-oriented programming language fully. However, it can mimic some object-oriented concepts.
-First of all, a Go structure with its type methods is like an object with its methods. Second, interfaces are like abstract data types that define behaviors and objects of the same class, which is similar to polymorphism. Third, Go supports encapsulation, which means it supports hiding data and functions from the user by making them private to the structure and the current Go package. Lastly, combining interfaces and structures is like composition in object-oriented terminology.
+
+* First of all, a Go structure with its type methods is like an object with its methods. 
+* Second, interfaces are like abstract data types that define behaviors and objects of the same class, which is similar to polymorphism. 
+* Third, Go supports encapsulation, which means it supports hiding data and functions from the user by making them private to the structure and the current Go package. 
+* Lastly, combining interfaces and structures is like composition in object-oriented terminology.
 
 ```go
 package main
@@ -872,7 +912,9 @@ type IntC interface {
     IntB
 }
 ```
+
 The IntC interface combines interfaces IntA and IntB. If you implement IntA and IntB for a data type, then this data type implicitly satisfies IntC.
+
 ```go
 func processA(s IntA) {
     fmt.Printf("%T\n", s)
@@ -925,17 +967,23 @@ func main() {
     processA(iC)
 }
 ```
-IntC, which is a composition of the IntA and IntB interfaces.
+
+`IntC` is a composition of the `IntA` and `IntB` interfaces.
+
 This new structure uses an anonymous structure (a), which means that it gets the fields of that anonymous structure.
-Here we access a method of the a structure (A.A()) and a method of the b structure (B.A()).
 
-When using an anonymous structure inside another structure, as we do with a{456, 789}, you can access the fields of the anonymous structure, which is the a{456, 789} structure, directly as iComp.XX and iComp.YY.
+Here we access a method of the `a` structure (A.A()) and a method of the `b` structure (B.A()).
 
-Although processA() works with IntA variables, it can also work with IntC variables because the IntC interface satisfies IntA!
+When using an anonymous structure inside another structure, as we do with a{456, 789}, you can access the fields of the anonymous structure, which is the a{456, 789} structure, directly as `iComp.XX` and `iComp.YY`.
+
+Although `processA()` works with `IntA` variables, it can also work with `IntC` variables because the `IntC` interface satisfies `IntA`!
 
 ## Updating the phone book application
-More advanced Go packages such as viper, which is presented in Chapter 6, Telling a UNIX System What to Do, simplify the process of parsing command-line arguments with the use of command-line options such as -f followed by a file path or --filepath
+
+More advanced Go packages such as `viper`, which is presented in Chapter 6, Telling a UNIX System What to Do, simplify the process of parsing command-line arguments with the use of command-line options such as `-f` followed by a file path or `--filepath`
+
 Generally speaking, not having to recompile your software for user-defined data is considered a good practice.
+
 Here is where we read the PHONEBOOK environment variable.
 
 ```go
@@ -965,8 +1013,11 @@ func setCSVFILE() error {
 	return nil
 }
 ```
+
 The first thing to decide when trying to sort data is the field that is going to be used for sorting. After that, we need to decide what we are going to do when two or more records have the same value in the main field used for sorting.
-The code related to sorting using sort.Interface is the following:
+
+The code related to sorting using `sort.Interface` is the following:
+
 You need to have a separate data type—sort.Interface is implemented for this data type.
 
 ```go
@@ -975,7 +1026,8 @@ type PhoneBook []Entry
 ```go
 var data = PhoneBook{}
 ```
-As you have a separate data type for implementing sort.Interface, the data type of the data variable needs to change and become PhoneBook. Then sort.Interface is implemented for PhoneBook.
+
+As you have a separate data type for implementing `sort.Interface`, the data type of the data variable needs to change and become PhoneBook. Then `sort.Interface` is implemented for PhoneBook.
 
 ```go
 // Implement sort.Interface
@@ -995,8 +1047,10 @@ func (a PhoneBook) Swap(i, j int) {
     a[i], a[j] = a[j], a[i]
 }
 ```
+
 What we say here is that if the entries that are compared, which are Go structures, have the same Surname field value, then compare these entries using their Name field values.
-The Swap() function has a standard implementation. After implementing the desired interface, we need to tell our code to sort the data, which happens in the implementation of the list() function:
+
+The `Swap()` function has a standard implementation. After implementing the desired interface, we need to tell our code to sort the data, which happens in the implementation of the `list()` function:
 
 ```go
 func list() {
@@ -1006,13 +1060,16 @@ func list() {
     }
 }
 ```
+
 ## Exercises
-Create a slice of structures using a structure that you created and sort the elements of the slice using a field from the structure
-Integrate the functionality of sortCSV.go in phonebook.go
-Add support for a reverse command to phonebook.go in order to list its entries in reverse order
-Use the empty interface and a function that allows you to differentiate between two different structures that you create
+
+* Create a slice of structures using a structure that you created and sort the elements of the slice using a field from the structure
+* Integrate the functionality of sortCSV.go in phonebook.go
+* Add support for a reverse command to phonebook.go in order to list its entries in reverse order
+* Use the empty interface and a function that allows you to differentiate between two different structures that you create
+
 ## Additional resources
-The documentation of the reflect package: [https://golang.org/pkg/reflect/](https://golang.org/pkg/reflect/)
-The documentation of the sort package: [https://golang.org/pkg/sort/](https://golang.org/pkg/sort/)
-Working with errors in Go 1.13: [https://blog.golang.org/go1.13-errors](https://blog.golang.org/go1.13-errors)
-The implementation of the sort package: [https://golang.org/src/sort/](https://golang.org/src/sort/)
+* The documentation of the reflect package: [https://golang.org/pkg/reflect/](https://golang.org/pkg/reflect/)
+* The documentation of the sort package: [https://golang.org/pkg/sort/](https://golang.org/pkg/sort/)
+* Working with errors in Go 1.13: [https://blog.golang.org/go1.13-errors](https://blog.golang.org/go1.13-errors)
+* The implementation of the sort package: [https://golang.org/src/sort/](https://golang.org/src/sort/)
