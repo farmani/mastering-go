@@ -1,32 +1,38 @@
 # Reflection and Interfaces
-Interfaces are about expressing abstractions and identifying and defining behaviors that can be shared among different data types.
+**_Interfaces_** are about expressing abstractions and identifying and defining behaviors that can be shared among different _data types_.
 
-Interfaces work with methods on types or type methods, which are like functions attached to given data types, which in Go are usually structures. Remember that once you implement the required type methods of an interface, that interface is satisfied implicitly, which is also the case with the empty interface that is explained in this chapter.
-Another handy Go feature is reflection, which allows you to examine the structure of a data type at execution time. However, as reflection is an advanced Go feature, you do not need to use it on a regular basis.
+Interfaces work with _**methods on types**_ or **_type methods_**, which are like functions attached to given data types, which in Go are _usually structures_. Remember that once you implement the required type methods of an interface, that interface is satisfied _implicitly_, which is also the case with the empty interface that is explained in this chapter.
+
+Another handy Go feature is **_reflection_**, which _allows you to examine the structure of a data type at execution time_. However, as reflection is an advanced Go feature, you do not need to use it on a regular basis.
 
 ## Reflection
-You might be wondering how you can find out the names of the fields of a structure at execution time. In such cases, you need to use reflection. Apart from enabling you to print the fields and the values of a structure, reflection also allows you to explore and manipulate unknown structures like the ones created from decoding JSON data.
+You might be wondering how you can find out the names of the fields of a structure at execution time. In such cases, you need to use reflection. _Apart from enabling you to print the fields and the values of a structure, reflection also allows you to explore and manipulate unknown structures like the ones created from decoding JSON data_.
+
 The two main questions:
 
-      Why was reflection included in Go?
-      When should I use reflection?
+* Why was reflection included in Go?
+* When should I use reflection?
     
-    To answer the first question, reflection allows you to dynamically learn the type of an arbitrary object along with information about its structure. Go provides the reflect package for working with reflection. Remember when we said in a previous chapter that fmt.Println() is clever enough to understand the data types of its parameters and act accordingly? Well, behind the scenes, the fmt package uses reflection to do that.
+To answer the first question, reflection allows you to dynamically learn the `type` of an arbitrary object along with information about its structure. Go provides the `reflect` package for working with reflection. Remember when we said in a previous chapter that `fmt.Println()` is clever enough to understand the data types of its parameters and act accordingly? Well, behind the scenes, the `fmt` package uses reflection to do that.
 
 As far as the second question is concerned, reflection allows you to handle and work with data types that do not exist at the time at which you write your code but might exist in the future, which is when we use an existing package with user-defined data types.
-Additionally, reflection might come in handy when you have to work with data types that do not implement a common interface and therefore have an uncommon or unknown behavior—this does not mean that they have bad or erroneous behavior, just uncommon behavior such as a user-defined structure.
+
+Additionally, reflection might come in handy when you have to work with data types that do not implement a common interface and therefore have an uncommon or unknown behavior, this does not mean that they have bad or erroneous behavior, just uncommon behavior such as a user-defined structure.
 
 > The introduction of generics in Go might make the use of reflection less frequent in some cases, because with generics you can work with different data types more easily and without the need to know their exact data types in advance. However, nothing beats reflection for fully exploring the structure and the data types of a variable.
 
-The most useful parts of the reflect package are two data types named reflect.Value and reflect.Type. Now, reflect.Value is used for storing values of any type, whereas reflect.Type is used for representing Go types. There exist two functions named reflect.TypeOf() and reflect.ValueOf() that return the reflect.Type and reflect.Value values, respectively. Note that reflect.TypeOf() returns the actual type of variable—if we are examining a structure, it returns the name of the structure.
-As structures are really important in Go, the reflect package offers the reflect.NumField() method for listing the number of fields in a structure as well as the Field() method for getting the reflect.Value value of a specific field of a structure.
-The reflect package also defines the reflect.Kind data type, which is used for representing the specific data type of a variable: int, struct, etc. The documentation of the reflect package lists all possible values of the reflect.Kind data type. The Kind() function returns the kind of a variable.
-Last, the Int() and String() methods return the integer and string value of a reflect.Value, respectively.
+The most useful parts of the `reflect` package are two data types named `reflect.Value` and `reflect.Type`. Now, `reflect.Value` is used for storing values of any type, whereas `reflect.Type` is used for representing Go types. There exist two functions named `reflect.TypeOf()` and `reflect.ValueOf()` that return the `reflect.Type` and `reflect.Value` values, respectively. Note that `reflect.TypeOf()` returns the _actual type_ of variable—if we are examining a structure, it returns the **name** of the structure.
+
+As structures are really important in Go, the `reflect` package offers the `reflect.NumField()` method for listing the number of fields in a structure as well as the `Field()` method for getting the `reflect.Value` value of a specific field of a structure.
+
+The `reflect` package also defines the `reflect.Kind` data type, which is used for representing the specific _data type_ of a variable: `int`, `struct`, etc. The documentation of the `reflect` package lists all possible values of the `reflect.Kind` data type. The `Kind()` function returns the _kind_ of a variable.
+
+Last, the `Int()` and `String()` methods return the integer and string value of a `reflect.Value`, respectively.
 
 > Reflection code can look unpleasant and hard to read sometimes. Therefore, according to the Go philosophy, you should rarely use reflection unless it is absolutely necessary because despite its cleverness, it does not create clean code.
 
-
 ### Learning the internal structure of a Go structure
+
 ```go
 package main
 import (
@@ -66,11 +72,13 @@ func main() {
 	}
 }
 ```
-In order to check the data type of a variable with a string, we need to convert the data type into a string variable first.
-You can also use the internal representation of a data type during checking. However, this makes less sense than using a string value.
-main.Record is the full unique name of the structure as defined by Go—main is the package name and Record is the struct name. This happens so that Go can differentiate between the elements of different packages.
-If you were to make changes to the values of the structure fields, you would use the Elem() method and pass the structure as a pointer to ValueOf()—remember that pointers allow you to make changes to the actual variable. There exist methods that allow you to modify an existing value. In our case, we are going to use SetString() for modifying a string field and SetInt() for modifying an int field.
+In order to check the **_data type_** of a variable with a `string`, we need to convert the data type into a `string` variable first.
 
+You can also use the internal representation of a data type during checking. However, this makes less sense than using a `string` value.
+
+`main.Record` is the **_full unique name_** of the structure as defined by Go—main is the package name and Record is the struct name. This happens so that Go can differentiate between the elements of different packages.
+
+If you were to make changes to the values of the structure fields, you would use the `Elem()` method and pass the structure as a pointer to `ValueOf()`—remember that pointers allow you to make changes to the actual variable. There exist methods that allow you to modify an existing value. In our case, we are going to use `SetString()` for modifying a string field and `SetInt()` for modifying an int field.
 
 ### Changing structure values using reflection
 what is more practical is being able to change values in the Go structure
@@ -106,21 +114,16 @@ func main() {
     fmt.Println("A:", A)
 }
 ```
-With the use of Elem() and a pointer to variable A, variable A can be modified if needed.
+With the use of `Elem()` and a pointer to variable A, variable A can be modified if needed.
 
-We are using SetInt() for modifying an integer value and SetString() for modifying a string value.
-
-Excerpt From
-Mastering Go
-Mihalis Tsoukalos
-This material may be protected by copyright.
+We are using `SetInt()` for modifying an integer value and `SetString()` for modifying a string value.
 
 ### The three disadvantages of reflection
 reflection should be used sparingly for three main reasons:
 
-      The first reason is that extensive use of reflection will make your programs hard to read and maintain. A potential solution to this problem is good documentation, but developers are notorious for not having the time to write proper documentation.
-      The second reason is that the Go code that uses reflection makes your programs slower. Generally speaking, Go code that works with a particular data type is always faster than Go code that uses reflection to dynamically work with any Go data type. Additionally, such dynamic code makes it difficult for tools to refactor or analyze your code.
-      The last reason is that reflection errors cannot be caught at build time and are reported at runtime as panics, which means that reflection errors can potentially crash your programs. This can happen months or even years after the development of a Go program! One solution to this problem is extensive testing before a dangerous function call. However, this adds even more Go code to your programs, which makes them even slower.
+* The first reason is that extensive use of reflection will make your programs **_hard to read_** and maintain. A potential solution to this problem is good documentation, but developers are notorious for not having the time to write proper documentation. 
+* The second reason is that the Go code that uses reflection makes your programs **_slower_**. Generally speaking, Go code that works with a particular data type is always faster than Go code that uses reflection to dynamically work with any Go data type. Additionally, such dynamic code makes it difficult for tools to refactor or analyze your code. 
+* The last reason is that reflection **_errors cannot be caught at build time_** and are reported at runtime as panics, which means that _reflection errors can potentially crash your programs_. This can happen months or even years after the development of a Go program! One solution to this problem is extensive testing before a dangerous function call. However, this adds even more Go code to your programs, which makes them even slower.
 
 ## Type methods
 A type method is a function that is attached to a specific data type. Although type methods (or methods on types) are in reality functions, they are defined and used in a slightly different way.
