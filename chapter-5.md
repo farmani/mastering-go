@@ -818,7 +818,7 @@ execute:
 ```
 The important thing about the previous configuration file is that we are using an image that comes with Go already installed, which saves us from having to install it from scratch and allows us to specify the Go version we want to use.
 
-### The final version of the configuration file
+### The final version of the configuration file gitlab pipeline
 
 ```yaml
 image: golang:1.15.7
@@ -853,7 +853,7 @@ In order to set up GitHub Actions, we need to create a directory named .github a
 ### Storing secrets in GitHub
 In your GitHub repository, go to the Settings tab and select Secrets from the left column. You will see your existing secrets, if any, and an Add new secret link, which you need to click on. Do this process twice to store your Docker Hub username and password.
 
-### The final version of the configuration file
+### The final version of the configuration file github action
 The final version of the configuration file compiles the Go code, puts it in a Docker image, as described by Dockerfile, connects with Docker Hub using the specified credentials, and pushes the Docker image to Docker Hub using the provided data. This is a very common way of automation when creating Docker images. The contents of go.yml is as follows:
 
 ```yaml
