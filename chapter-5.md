@@ -2,32 +2,32 @@
 
 Go packages are Go's way of organizing, delivering, and using code. 
 
-The most common component of packages is functions, which are pretty flexible and powerful and are used for data processing and manipulation. Go also supports modules, which are packages with version numbers.
+The most common component of packages is **_functions_**, which are pretty flexible and powerful and are used for data processing and manipulation. Go also supports modules, which are _packages_ with _version numbers_.
 
-Regarding the visibility of package elements, Go follows a simple rule that states that functions, variables, data types, structure fields, and so forth that begin with an uppercase letter are public, whereas functions, variables, types, and so on that begin with a lowercase letter are private. 
+Regarding the visibility of package elements, Go follows a simple rule that states that functions, variables, data types, structure fields, and so forth that begin with an _uppercase letter are public_, whereas functions, variables, types, and so on that begin with a _lowercase letter are private_. 
 
-The same rule applies not only to the name of a struct variable but to the fields of a struct variable—in practice, this means that you can have a struct variable with both private and public fields. However, this rule does not affect package names, which are allowed to begin with either uppercase or lowercase letters.
+The same rule applies not only to the name of a struct variable but to the _fields of a struct variable_—in practice, this means that _you can have a struct variable with both private and public fields_. However, this rule does not affect package names, which are allowed to begin with either uppercase or lowercase letters.
 
 ## Go packages
 
-Everything in Go is delivered in the form of packages. A Go package is a Go source file that begins with the `package` keyword, followed by the name of the package.
+Everything in Go is delivered in the form of packages. _A Go package is a Go source file that begins with the `package` keyword, followed by the name of the package._
 
-> Note that packages can have structure. For example, the `net` package has several subdirectories, named http, mail, rpc, smtp, textproto, and url, which should be imported as net/http, net/mail, net/rpc, net/smtp, net/textproto, and net/url, respectively.
+> Note that packages can have structure. For example, the `net` package has several subdirectories, named `http`, `mail`, `rpc`, `smtp`, `textproto`, and `url`, which should be imported as `net/http`, `net/mail`, `net/rpc`, `net/smtp`, `net/textproto`, and `net/url`, respectively.
     
 There are external packages that can be imported using their full address and that should be downloaded on the local machine, before their first use.
 
-Note that apart from the main package, Go packages are not autonomous programs and cannot be compiled into executable files on their own.
+> Note that apart from the **main** package, Go packages are not autonomous programs and cannot be compiled into executable files on their own.
 
 ### Downloading Go packages
 
-The go get command for downloading the `cobra` package is as follows:
+The `go get` command for downloading the `cobra` package is as follows:
 
 ```shell
 $ go get github.com/spf13/cobra
 $ tree ~/go -L 3
 ```
 
-> The x path, which is displayed last, is used by the Go team.
+> The `x` path, which is displayed last, is used by the Go team.
 
 Note that you can download the package without using `https://` in its address. The results can be found inside the `~/go` directory—the full path is `~/go/src/github.com/spf13/cobra`. As the cobra package comes with a binary file that helps you structure and create command-line utilities, you can find that binary file inside `~/go/bin` as cobra.
 
@@ -212,7 +212,7 @@ s := []float64{1.1, 2.12, 3.14}
 sum = addFloats("Adding numbers...", s...)
 ```
 
-Variadic functions come in very handy when you want to have an unknown number of parameters in a function.
+_**Variadic functions**_ come in very handy when you want to have an unknown number of parameters in a function.
 
 ### The defer keyword
 
@@ -651,28 +651,28 @@ func UpdateUser(d Userdata) error {
 > you should not forget to download the latest version of that external package using `go get` or `go get -u`.
 
 ## Modules
-A Go module is like a Go package with a version—however, Go modules can consist of multiple packages. Go uses semantic versioning for versioning modules. This means that versions begin with the letter v, followed by the major.minor.patch version numbers. Therefore, you can have versions such as v1.0.0, v1.0.5, and v2.0.2. The v1, v2, and v3 parts signify the major version of a Go package that is usually not backward compatible. This means that if your Go program works with v1, it will not necessarily work with v2 or v3—it might work, but you cannot count on it. The second number in a version is about features. Usually, v1.1.0 has more features than v1.0.2 or v1.0.0, while being compatible with all older versions. Lastly, the third number is just about bug fixes without having any new features. Note that semantic versioning is also used for Go versions.
-If you want to learn more about modules, visit and read https://blog.golang.org/using-go-modules, which has five parts, as well as https://golang.org/doc/modules/developing. Just remember that a Go module is similar but not identical to a regular Go package with a version, and that a module can consist of multiple packages.
+_A Go module is like a Go package with a version_—however, Go modules can consist of multiple packages. Go uses semantic versioning for versioning modules. This means that versions begin with the letter v, followed by the major.minor.patch version numbers. Therefore, you can have versions such as v1.0.0, v1.0.5, and v2.0.2. The v1, v2, and v3 parts signify the major version of a Go package that is usually not backward compatible. This means that if your Go program works with v1, it will not necessarily work with v2 or v3—it might work, but you cannot count on it. The second number in a version is about features. Usually, v1.1.0 has more features than v1.0.2 or v1.0.0, while being compatible with all older versions. Lastly, the third number is just about bug fixes without having any new features. Note that semantic versioning is also used for Go versions.
+If you want to learn more about modules, visit and read [https://blog.golang.org/using-go-modules](https://blog.golang.org/using-go-modules), which has five parts, as well as [https://golang.org/doc/modules/developing](https://golang.org/doc/modules/developing). Just remember that a Go module is similar but not identical to a regular Go package with a version, and that _a module can consist of multiple packages_.
 
 ## Creating better packages
 Here are several good rules to follow to create high-class Go packages:
 
-* The first unofficial rule of a successful package is that its elements must be connected in some way. Thus, you can create a package for supporting cars, but it would not be a good idea to create a single package for supporting cars and bicycles and airplanes. Put simply, it is better to split the functionality of a package unnecessarily into multiple packages than to add too much functionality to a single Go package.
-* A second practical rule is that you should use your own packages first for a reasonable amount of time before giving them to the public. This helps you discover silly bugs and make sure that your packages operate as expected. After that, give them to some fellow developers for additional testing before making them publicly available. Additionally, you should always write tests for any package you intend others to use.
-* Next, make sure your package has a clear and useful API so that any consumer can be productive with it quickly.
-* Try and limit the public API of your packages to only what is absolutely necessary. Additionally, give your functions descriptive but not very long names.
-* Interfaces, and in future Go versions, generics, can improve the usefulness of your functions, so when you think it is appropriate, use an interface instead of a single type as a function parameter or return type.
+* The first unofficial rule of a successful package is that _its elements must be connected in some way_. Thus, you can create a package for supporting cars, but it would not be a good idea to create a single package for supporting cars and bicycles and airplanes. Put simply, _it is better to split the functionality of a package unnecessarily into multiple packages than to add too much functionality to a single Go package_.
+* A second practical rule is that _you should use your own packages first for a reasonable amount of time before giving them to the public_. This helps you discover silly bugs and make sure that your packages operate as expected. After that, give them to some fellow developers for additional testing before making them publicly available. _Additionally, you should always write tests for any package you intend others to use._
+* Next, _make sure your package has a clear and useful API_ so that any consumer can be productive with it quickly.
+* _Try and limit the public API of your packages to only what is absolutely necessary. Additionally, give your functions descriptive but not very long names._
+* _Interfaces, and in future Go versions, generics, can improve the usefulness of your functions, so when you think it is appropriate, use an interface instead of a single type as a function parameter or return type._
 * When updating one of your packages, try not to break things and create incompatibilities with older versions unless it is absolutely necessary.
-* When developing a new Go package, try to use multiple files in order to group similar tasks or concepts.
+* When developing a new Go package, _try to use multiple files in order to group similar tasks or concepts._
 * Do not create a package that already exists from scratch. Make changes to the existing package and maybe create your own version of it.
-* Nobody wants a Go package that prints logging information on the screen. It would be more professional to have a flag for turning on logging when needed. The Go code of your packages should be in harmony with the Go code of your programs. This means that if you look at a program that uses your packages and your function names stand out in the code in a bad way, it would be better to change the names of your functions. As the name of a package is used almost everywhere, try to use concise and expressive package names.
-* It is more convenient if you put new Go type definitions near where they are used the first time because nobody, including yourself, wants to search source files for definitions of new data types.
-* Try to create test files for your packages, because packages with test files are considered more professional than ones without them; small details make all the difference and give people confidence that you are a serious developer! Notice that writing tests for your packages is not optional and that you should avoid using packages that do not include tests. You will learn more about testing in Chapter 11, Code Testing and Profiling.
+* Nobody wants a Go package that prints logging information on the screen. It would be more professional to _have a flag for turning on logging when needed_. The Go code of your packages should be in harmony with the Go code of your programs. This means that if you look at a program that uses your packages and your function names stand out in the code in a bad way, it would be better to change the names of your functions. As the name of a package is used almost everywhere, try to use concise and expressive package names.
+* It is more convenient if you _put new Go type definitions near where they are used the first time_ because nobody, including yourself, wants to search source files for definitions of new data types.
+* _Try to create test files for your packages, because packages with test files are considered more professional than ones without them_; small details make all the difference and give people confidence that you are a serious developer! Notice that writing tests for your packages is not optional and that you should avoid using packages that do not include tests. You will learn more about testing in Chapter 11, Code Testing and Profiling.
 
-that the actual Go code in a package should be bug-free, the next most important element of a successful package is its documentation, as well as some code examples that clarify its use and showcase the idiosyncrasies of the functions of the package.
+* _The next most important element of a successful package is its documentation_, as well as some code examples that clarify its use and showcase the idiosyncrasies of the functions of the package.
 
 ## Generating documentation
-Go follows a simple rule regarding documentation: in order to document a function, a method, a variable, or even the package itself, you can write comments, as usual, that should be located directly before the element you want to document, without any empty lines in between. You can use one or more single-line comments, which are lines beginning with //, or block comments, which begin with /* and end with */—everything in-between is considered a comment.
+Go follows a simple rule regarding documentation: **_in order to document a function, a method, a variable, or even the package itself, you can write comments, as usual, that should be located directly before the element you want to document, without any empty lines in between._** You can use one or more single-line comments, which are lines beginning with `//`, or block comments, which begin with `/*` and end with `*/`—everything in-between is considered a comment.
 
 > It is highly recommended that each Go package you create has a block comment preceding the package declaration that introduces developers to the package, and also explains what the package does.
 
@@ -753,8 +753,8 @@ func AddUser(d Userdata) int {
 	return -1
 }
 /*
-   DeleteUser deletes an existing user if the user exists.
-   It requires the User ID of the user to be deleted.
+DeleteUser deletes an existing user if the user exists.
+It requires the User ID of the user to be deleted.
 */
 func DeleteUser(id int) error {
 	fmt.Println(id)
@@ -779,16 +779,23 @@ func UpdateUser(d Userdata) error {
 }
 ```
 This is the first block of documentation that is located right before the name of the package. This is the appropriate place to document the functionality of the package, as well as other essential information.
-Other information that you can put at the beginning of a package is the author, the license, and the version of the package.
+Other information that you can put at the beginning of a package is the `author`, the `license`, and the `version` of the package.
+
 If a line in a block comment begins with a tab, then it is rendered differently in the graphical output, which is good for differentiating between various kinds of information in the documentation:
-The BUG keyword is special when writing documentation. Go knows that bugs are part of the code and therefore should be documented as well. You can write any message you want after a BUG keyword, and you can place them anywhere you want—preferably close to the bugs they describe.
-The github.com/lib/pq package was removed from the import block to make the file size smaller.
-The previous code shows a way of documenting lots of variables at once—in this case, global variables. The good thing with this way is that you do not have to put a comment before each global variable and make the code less readable.
+
+The `BUG` keyword is special when writing documentation. Go knows that bugs are part of the code and therefore should be documented as well. You can write any message you want after a `BUG` keyword, and you can place them anywhere you want—preferably close to the bugs they describe.
+
+The `github.com/lib/pq` package was removed from the import block to make the file size smaller.
+
+The previous code shows a way of documenting lots of variables at once—in this case, global variables.  The good thing with this way is that you do not have to put a comment before each global variable and make the code less readable.
+
 When documenting a function, it is good to begin the first line of the comments with the function name.
 In this case, we will explain the return values of the exists() function as they have a special meaning.
+
 When you request the documentation of the Userdata structure, Go automatically presents the functions that use Userdata as input or output, or both.
-There are two ways to see the documentation of the package. The first one involves using go get, which also means creating a GitHub repository of the package, as we did with post05. However, as this is for testing purposes, we are going to do things the easy way: we are going to copy it in ~/go/src and access it from there. As the package is called document, we are going to create a directory with the same name inside ~/go/src. After that, we are going to copy document.go in ~/go/src/document and we are done—for more complex packages, the process is going to be more complex as well. In such cases, it would be better to go get the package from its repository.
-Either way, the go doc command is going to work just fine with the document package:
+
+There are two ways to see the documentation of the package. The first one involves using `go get`, which also means creating a GitHub repository of the package, as we did with post05. However, as this is for testing purposes, we are going to do things the easy way: we are going to copy it in `~/go/src` and access it from there. As the package is called document, we are going to create a directory with the same name inside `~/go/src`. After that, we are going to copy `document.go` in `~/go/src/document` and we are done—for more complex packages, the process is going to be more complex as well. In such cases, it would be better to go get the package from its repository.
+Either way, the `go doc` command is going to work just fine with the document package:
 
 ```shell
 $ go doc document
@@ -826,20 +833,21 @@ package document // import "document"
 func ListUsers() ([]Userdata, error)
     ListUsers lists all users in the database and returns a slice of Userdata.
 ```
+
 > Go automatically puts the bugs at the end of the text and graphical output.
 
-In my personal opinion, rendering the documentation is much better when using the graphical interface, making it better when you do not know what you are looking for. On the other hand, using go doc from the command line is much faster and allows you to process the output using traditional UNIX command-line tools.
+In my personal opinion, rendering the documentation is much better when using the graphical interface, making it better when you do not know what you are looking for. On the other hand, using `go doc` from the command line is much faster and allows you to process the output using traditional UNIX command-line tools.
 
 
 ## GitLab Runners and Go
 ### The initial version of the configuration file
 
-The name of the configuration file is .gitlab-ci.yml and is a YAML file that should be located in the root directory of the GitLab repository. This initial version of the .gitlab-ci.yml configuration file compiles hw.go and creates a binary file, which is executed in a different stage than the one it was created in.
+The name of the configuration file is `.gitlab-ci.yml` and is a YAML file that should be located in the root directory of the GitLab repository. This initial version of the `.gitlab-ci.yml` configuration file compiles `hw.go` and creates a binary file, which is executed in a different stage than the one it was created in.
 
 
 ```shell
 $ cat .gitlab-ci.yml
-image: golang:1.15.7
+image: golang:1.19.2
 stages:
     - download
     - execute
@@ -866,7 +874,7 @@ The important thing about the previous configuration file is that we are using a
 ### The final version of the configuration file gitlab pipeline
 
 ```yaml
-image: golang:1.15.7
+image: golang:1.19.2
 stages:
     - download
     - execute
@@ -881,9 +889,7 @@ compile:
     artifacts:
         paths:
             - bin/
-
-    The bin directory, along with its contents, will be available to the execute state:
-    execute:
+execute:
     stage: execute
     script:
         - echo "Executing usePost05"
@@ -893,20 +899,18 @@ compile:
 As we do not have a PostgreSQL instance available, we cannot try interacting with PostgreSQL, but we can execute usePost05.go and see the values of the Hostname and Port global variables.
 
 ## GitHub Actions and Go
-In order to set up GitHub Actions, we need to create a directory named .github and then create another directory named workflows in it. The .github/workflows directory contains YAML files with the pipeline configuration.
+In order to set up GitHub Actions, we need to create a directory named `.github` and then create another directory named workflows in it. The `.github/workflows` directory contains YAML files with the pipeline configuration.
 
 ### Storing secrets in GitHub
 In your GitHub repository, go to the Settings tab and select Secrets from the left column. You will see your existing secrets, if any, and an Add new secret link, which you need to click on. Do this process twice to store your Docker Hub username and password.
 
-### The final version of the configuration file github action
+### The final version of the configuration file GitHub action
 The final version of the configuration file compiles the Go code, puts it in a Docker image, as described by Dockerfile, connects with Docker Hub using the specified credentials, and pushes the Docker image to Docker Hub using the provided data. This is a very common way of automation when creating Docker images. The contents of go.yml is as follows:
 
 ```yaml
 name: Go + PostgreSQL
-on: [push]
-
-    This line in the configuration file specifies that this pipeline is triggered on push operations only.
-    jobs:
+on: [push] # This line in the configuration file specifies that this pipeline is triggered on push operations only.
+jobs:
   build:
     runs-on: ubuntu-18.04
     steps:
@@ -930,16 +934,19 @@ on: [push]
         docker push "$USERNAME/${IMAGE_NAME}:latest"
         echo "* Running Docker Image"
         docker run ${IMAGE_NAME}:latest
-
 ```
+
 This time, most of the work is performed by the docker build command because the Go executable is built inside a Docker image.
+
 ## Versioning utilities
 One of the most difficult tasks is to automatically and uniquely version command-line utilities, especially when using a CI/CD system.
+
 > You can apply the same technique to GitLab—just search for the available GitLab variables and values and choose one that fits your needs.
 
-What we need to do is tell the Go linker that we are going to define the value of the VERSION variable. This happens with the help of the -ldflags flag, which stands for linker flags—this passes values to the cmd/link package, which allows us to change values in imported packages at build time. The -X value that is used requires a key/value pair, where the key is a variable name and the value is the value that we want to set for that key. In our case, the key has the main.Variable form because we change the value of a variable in the main package. As the name of the variable in gitVersion.go is VERSION, the key is main.VERSION.
-But first, we need to decide on the GitHub value that we are going to use as the version string. The git rev-list HEAD command returns a full list of commits for the current repository from the latest to the oldest. We only need the last one—the most recent—which we can get using git rev-list -1 HEAD or git rev-list HEAD | head -1. So, we need to assign that value to an environment variable and pass that environment variable to the Go compiler. As this value changes each time you make a commit and you always want to have the latest value, you should reevaluate it each time you execute go build—this will be shown in a while.
-In order to provide gitVersion.go with the value of the desired environment variable, we should execute it as follows:
+What we need to do is tell the Go linker that we are going to define the value of the `VERSION` variable. This happens with the help of the `-ldflags` flag, which stands for linker flags—this passes values to the `cmd/link` package, which allows us to change values in imported packages at build time. The `-X` value that is used requires a key/value pair, where the key is a variable name and the value is the value that we want to set for that key. In our case, the key has the `main.Variable` form because we change the value of a variable in the main package. As the name of the variable in `gitVersion.go` is VERSION, the key is `main.VERSION`.
+But first, we need to decide on the GitHub value that we are going to use as the version string. The `git rev-list HEAD` command returns a full list of commits for the current repository from the latest to the oldest. We only need the last one—the most recent—which we can get using `git rev-list -1 HEAD` or `git rev-list HEAD | head -1`. So, we need to assign that value to an environment variable and pass that environment variable to the Go compiler. As this value changes each time you make a commit, and you always want to have the latest value, you should reevaluate it each time you execute go build—this will be shown in a while.
+
+In order to provide `gitVersion.go` with the value of the desired environment variable, we should execute it as follows:
 
 ```go
 package main
@@ -965,8 +972,8 @@ $ go build -ldflags "-X main.VERSION=$VERSION" gitVersion.go
 
 ## Exercises
 * Can you write a function that sorts three int values? Try to write two versions of the function: one with named returned values and another without named return values. Which one do you think is better?
-* Rewrite the getSchema.go utility so that it works with the jackc/pgx package.
-* Rewrite the getSchema.go utility so that it works with MySQL databases.
+* Rewrite the `getSchema.go` utility so that it works with the `jackc/pgx` package.
+* Rewrite the `getSchema.go` utility so that it works with MySQL databases.
 * Use GitLab CI/CD to push Docker images to Docker Hub.
 
 ## Additional resources
